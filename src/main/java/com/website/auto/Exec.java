@@ -19,7 +19,7 @@ public class Exec {
         session.connect();
 
         Channel channel = session.openChannel("exec");
-        ((ChannelExec)channel).setcmd(cmd);
+        ((ChannelExec)channel).setCommand(cmd);
 
         channel.setInputStream(null);
         ((ChannelExec)channel).setErrStream(System.err);
@@ -27,6 +27,9 @@ public class Exec {
         channel.connect();
 
         byte[] tmp = new byte[1024];
+
+        System.out.println("Session: " + session.isConnected());
+        System.out.println("Channel: " + channel.isConnected());
 
         while (true) {
             while (in.available() > 0) {
@@ -36,12 +39,16 @@ public class Exec {
                     break;
                 }
 
+                //Something is happening where in.available() never goes above 0.  Troubleshooting required.
+                //Try verifying connectivity to the host first with something like session.isConnected() and
+                //channel.isConnected()
+
                 System.out.println(new String(tmp, 0, i));
             }
 
             if (channel.isClosed()) {
                 if (channel.getExitStatus() == 0) {
-                    System.out.println("cmd executed successfully.");
+                    System.out.println("Command executed successfully.");
                 }
 
                 break;
