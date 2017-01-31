@@ -4,25 +4,42 @@ import com.jcraft.jsch.*;
 import java.io.*;
 import java.lang.StringBuilder;
 
-public class Exec {
-    public static void main(String[] args) throws IOException, JSchException {
-        String host = args[0];
-        String user = args[1];
-        String pswd = args[2];
-        String cmd = args[3];
+public class AffectedHost {
+    private String host;
+    private String user;
+    private String pswd;
 
+    public AffectedHost(String host, String user, String pswd) {
+        this.host = host;
+        this.user = user;
+        this.pswd = pswd;
+    }
+
+    public int exec(String cmd) {
         JSch jsch = new JSch();
-        Session session = jsch.getSession(user, host, 22);
+        Session session = null;
+
+        try {
+            session = jsch.getSession(this.user, this.host, 22);
+        } catch (JSchException e) {
+            System.out.println(e);
+        }
 
         try {
             session.setConfig("StrictHostKeyChecking", "no");
-            session.setPassword(pswd);
+            session.setPassword(this.pswd);
             session.connect();
         } catch (JSchException e) {
             System.out.println(e);
         }
 
-        Channel channel = session.openChannel("exec");
+        Channel channel = null;
+
+        try {
+            channel = session.openChannel("exec");
+        } catch (JSchException e) {
+            System.out.println(e);
+        }
 
         try {
             ((ChannelExec)channel).setCommand(cmd);
@@ -34,7 +51,14 @@ public class Exec {
             System.out.println(e);
         }
 
-        InputStream stdout = channel.getInputStream();
+        InputStream stdout = null;
+
+        try {
+            stdout = channel.getInputStream();
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stdout));
 
         StringBuilder results = new StringBuilder();
@@ -49,9 +73,10 @@ public class Exec {
         }
 
         System.out.println(results.toString());
-        System.out.printf("Exit status: %d%n", channel.getExitStatus());
 
         channel.disconnect();
         session.disconnect();
+
+        return channel.getExitStatus();
     }
 }
