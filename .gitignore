@@ -4,3 +4,5 @@
 *.ear
 
 target/
+src/main/resources/credentials/credentials.properties
+run
