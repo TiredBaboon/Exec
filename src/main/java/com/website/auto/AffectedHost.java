@@ -9,10 +9,11 @@ public class AffectedHost {
     private String user;
     private String pswd;
 
-    public AffectedHost(String host, String user, String pswd) {
+    public AffectedHost(String host) {
         this.host = host;
-        this.user = user;
-        this.pswd = pswd;
+        Credentials creds = new Credentials(host);
+        this.user = creds.getUser();
+        this.pswd = creds.getPswd();
     }
 
     public int exec(String cmd) {
