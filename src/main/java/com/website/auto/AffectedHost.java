@@ -11,7 +11,9 @@ public class AffectedHost {
 
     public AffectedHost(String host) {
         this.host = host;
+
         Credentials creds = new Credentials(host);
+
         this.user = creds.getUser();
         this.pswd = creds.getPswd();
     }

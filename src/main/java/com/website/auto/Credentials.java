@@ -11,8 +11,10 @@ public class Credentials {
     private Properties credentials = new Properties();
 
     public Credentials(String host) {
+        FileInputStream in = null; 
+
         try {
-            FileInputStream in = new FileInputStream(credentialsFile);
+            in = new FileInputStream(credentialsFile);
 
             try {
                 credentials.load(in);
@@ -20,11 +22,11 @@ public class Credentials {
 
                 this.user = findUser(host);
                 this.pswd = findPswd(host);
-            } catch (IOException e) {
-                System.out.println("Error: IOException");
+            } catch (IOException i) {
+                System.out.println("IOException: " + i);
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("Error: File not found");
+        } catch (FileNotFoundException f) {
+            System.out.println("FileNotFoundException: " + f);
         }
     }
 
