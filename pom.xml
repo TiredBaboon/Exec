@@ -18,7 +18,7 @@
     <repository>
       <id>in-project</id>
       <name>Project Repository</name>
-      <url>file://${project.baseDir}/lib</url>
+      <url>file://${project.baseDir}/src/main/lib</url>
     </repository>
   </repositories>
 
