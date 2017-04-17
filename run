@@ -3,4 +3,4 @@
 CMD="$1"
 HOST="192.168.0.12"
 
-java -cp "target/Exec-0.0.jar:/home/toc362_ubuntu/.m2/repository/com/jcraft/jsch/0.1.54/jsch-0.1.54.jar" com.website.auto.Remote "$HOST" "$CMD"
+java -cp "target/Exec-0.0.jar:src/main/java/jsch-0.1.54.jar" com.website.auto.Remote "$HOST" "$CMD"
