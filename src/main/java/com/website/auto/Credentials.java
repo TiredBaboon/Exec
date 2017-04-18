@@ -1,41 +1,41 @@
 package com.website.auto;
 
-import java.util.Properties;
-import java.io.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.sql.DataSource;
 
 public class Credentials {
     private String user;
     private String pswd;
 
-    private static String credentialsFile = "/home/toc362_ubuntu/scripts/java/Exec/src/main/resources/credentials/credentials.properties";
-    private Properties credentials = new Properties();
-
     public Credentials(String host) {
-        FileInputStream in = null; 
+        DataSource ds = DataSourceFactory.getMySQLDataSource();
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
 
         try {
-            in = new FileInputStream(credentialsFile);
+            con = ds.getConnection();
+            stmt = con.createStatement();
+            rs = stmt.executeQuery("select username, aes_decrypt(password, 's3cr3t') as 'password' from credentials");
 
-            try {
-                credentials.load(in);
-                in.close();
-
-                this.user = findUser(host);
-                this.pswd = findPswd(host);
-            } catch (IOException i) {
-                System.out.println("IOException: " + i);
+            while (rs.next()) {
+                this.user = rs.getString("username");
+                this.pswd = rs.getString("password");
             }
-        } catch (FileNotFoundException f) {
-            System.out.println("FileNotFoundException: " + f);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-    }
-
-    private String findUser(String host) {
-        return this.credentials.getProperty("user");
-    }
-
-    private String findPswd(String host) {
-        return this.credentials.getProperty("pswd");
     }
 
     public String getUser() {
