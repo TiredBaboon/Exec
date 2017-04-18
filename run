@@ -3,4 +3,4 @@
 CMD="$1"
 HOST="192.168.0.12"
 
-java -cp "target/Exec-0.0.jar:src/main/lib/jsch-0.1.54.jar" com.website.auto.Remote "$HOST" "$CMD"
+java -cp "target/Exec-0.0.jar:src/main/lib/jsch-0.1.54.jar:src/main/lib/mysql-connector-java-5.1.41-bin.jar" com.website.auto.Remote "$HOST" "$CMD"
